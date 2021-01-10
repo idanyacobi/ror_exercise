@@ -33,16 +33,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def set_user
-    @user = User.find(params[:id])
-  end
-
-  def authenticate
-    if @user.token != request.headers[:token]
-      render :json => { :errors => "User unauthenticated" }, :status => 401
-    end
-  end
-
   def sign_in
     @user = ::Services::UserService::sign_in login_params
     if @user
@@ -70,6 +60,18 @@ class UsersController < ApplicationController
       render json: @user
     else
       render :json => { :errors => @user.errors.full_messages }, :status => 400
+    end
+  end
+
+  private
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  private
+  def authenticate
+    if @user.token != request.headers[:token]
+      render :json => { :errors => "User unauthenticated" }, :status => 401
     end
   end
 
